@@ -12,9 +12,10 @@ export async function getStaticPaths() {
     }));
 }
 
-const { entry } = Astro.props;
 
+const { entry } = Astro.props;
 const { Content } = await render(entry);
+
 
 import Layout from "../../layouts/Layout.astro";
 import 'katex/dist/katex.min.css';
@@ -37,5 +38,8 @@ import 'katex/dist/katex.min.css';
         text-align: center !important;
         margin: 1.5em 0 !important;
         width: 100% !important;
+    }
+    a {
+        text-decoration: none;
     }
 </style>

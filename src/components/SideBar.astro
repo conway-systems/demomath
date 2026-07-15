@@ -1,0 +1,105 @@
+---
+import { templateLiteral } from 'astro:schema';
+import type { NavNode } from '../utils/navigation'
+import { isActionError } from 'astro:actions';
+
+interface Props {
+    items: NavNode[];
+    currentPath: string;
+}
+
+const { items, currentPath } = Astro.props;
+---
+
+<ul class="sidebar-list">
+    {items.map((item) => {
+        const isFolder = item.children && item.children.length > 0;
+        const isActive = currentPath === `/learn/${item.slug}`;
+
+        return (
+            <li class="sidebar-item">
+                {isFolder ? (
+                    <details open class="sidebar-folder">
+                        <summary class="folder-title">
+                            <span class="folder-icon">📁</span> {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+                        </summary>
+                        <div class="folder-content">
+                            <Astro.self items={item.children} currentPath={currentPath} />
+                        </div>
+                    </details>
+                ) : (
+                    <a href={`/learn/${item.slug}`} class:list={['page-link', { active: isActive }]}>
+                        <span class="file-icon">📄</span> {item.name}
+                    </a>
+                )}
+            </li>
+        )
+    })}
+</ul>
+
+<style>
+  .sidebar-list {
+    list-style: none;
+    padding-left: 12px;
+    margin: 0;
+  }
+
+  .sidebar-item {
+    margin: 6px 0;
+  }
+
+  /* Folder styling */
+  .sidebar-folder {
+    margin-bottom: 4px;
+  }
+
+  .folder-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 6px;
+    border-radius: 4px;
+    color: #4a5568;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .folder-title:hover {
+    background-color: #f7fafc;
+  }
+
+  .folder-content {
+    border-left: 1px solid #e2e8f0;
+    margin-left: 6px;
+  }
+
+  /* Page link styling */
+  .page-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: #2d3748;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+  }
+
+  .page-link:hover {
+    background-color: #edf2f7;
+    color: #000;
+  }
+
+  .page-link.active {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+    font-weight: 600;
+  }
+
+  .folder-icon, .file-icon {
+    font-size: 0.85em;
+  }
+</style>
