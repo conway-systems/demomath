@@ -1,0 +1,56 @@
+---
+// src/layouts/Layout.astro
+import TopBar from '../components/TopBar.astro';
+import SideBar from '../components/SideBar.astro'
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <TopBar />
+    <SideBar />
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <p>&copy; 2026 demomath.org</p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  p {
+    font-family: 'Roboto';
+  }
+  body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f9f9f9;
+  }
+  main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  footer {
+    padding: 1em;
+  }
+</style>

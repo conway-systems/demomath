@@ -1,0 +1,41 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getConfiguredImageService } from "astro:assets";
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+    const docs = await getCollection('learn');
+
+    return docs.map(entry => ({
+        params: { slug: entry.id },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+
+const { Content } = await render(entry);
+
+import Layout from "../../layouts/Layout.astro";
+import 'katex/dist/katex.min.css';
+---
+
+<Layout title=`${entry.data.title} | demomath.org`>
+    <main style="max-width: 800px; margin: 0 auto; padding: 2rem">
+        <a href="/learn">← Back to learn</a>
+        <hr />
+        <h1>{entry.data.title}</h1>
+        <article>
+            <Content />
+        </article>
+    </main>
+</Layout>
+
+<style is:global>
+    .katex {
+        display: block !important;
+        text-align: center !important;
+        margin: 1.5em 0 !important;
+        width: 100% !important;
+    }
+</style>

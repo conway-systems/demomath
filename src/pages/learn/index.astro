@@ -1,0 +1,11 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('learn');
+---
+
+<Layout title="Learn | demomath.org">
+    <h1>Welcome to the Learn Page!</h1>
+    <p>This content is wrapped neatly inside the global layout structure.</p>
+</Layout>
