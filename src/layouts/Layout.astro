@@ -4,7 +4,7 @@ import TopBar from '../components/TopBar.astro';
 import SideBar from '../components/SideBar.astro'
 
 interface Props {
-  title: string;
+    title: string;
 }
 
 const { title } = Astro.props;
@@ -19,45 +19,64 @@ const currentPath = Astro.url.pathname;
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
+    <head>
+        <meta charset="utf-8" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-  </head>
-  <body>
-    <TopBar />
-    <SideBar items={navTree} currentPath={currentPath} />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{title}</title>
+    </head>
+    <body>
+        <TopBar />
+        <div class="layout-container">
+            <aside class="sidebar-wrapper">
+                <SideBar items={navTree} currentPath={currentPath} />
+            </aside>
 
-    <main>
-      <slot />
-    </main>
+            <div class="main-wrapper">
+                <slot />
+            </div>
+        </div>
 
-    <footer>
-      <p>&copy; 2026 demomath.org</p>
-    </footer>
-  </body>
+        <footer>
+            <p>&copy; 2026 demomath.org</p>
+        </footer>
+    </body>
 </html>
 
 <style is:global>
-  p {
-    font-family: 'Roboto';
-  }
-  body {
-    margin: 0;
-    font-family: sans-serif;
-    background-color: #f9f9f9;
-  }
-  main {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-  }
-  footer {
-    padding: 1em;
-  }
+    .layout-container {
+        display: grid;
+        grid-template-columns: 260px minmax(0, 1fr);
+        min-height: 100vh;
+    }
+
+    .sidebar-wrapper {
+        position: sticky;
+        overflow-y: auto;
+    }
+
+    .main-wrapper {
+        margin: 2rem auto;
+        padding: 0 1rem;
+        overflow-y: auto;
+        width: 100%;
+    }
+
+    p {
+        font-family: 'Roboto';
+    }
+
+    body {
+        margin: 0;
+        font-family: sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    footer {
+        padding: 1em;
+    }
 </style>

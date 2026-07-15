@@ -38,68 +38,69 @@ const { items, currentPath } = Astro.props;
 </ul>
 
 <style>
-  .sidebar-list {
-    list-style: none;
-    padding-left: 12px;
-    margin: 0;
-  }
+    .sidebar-list {
+        list-style: none;
+        overflow-y: auto;
+        padding-left: 12px;
+        margin: 0;
+    }
 
-  .sidebar-item {
-    margin: 6px 0;
-  }
+    .sidebar-item {
+        margin: 6px 0;
+    }
 
-  /* Folder styling */
-  .sidebar-folder {
-    margin-bottom: 4px;
-  }
+    /* Folder styling */
+    .sidebar-folder {
+        margin-bottom: 4px;
+    }
 
-  .folder-title {
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    user-select: none;
-    padding: 4px 6px;
-    border-radius: 4px;
-    color: #4a5568;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+    .folder-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        user-select: none;
+        padding: 4px 6px;
+        border-radius: 4px;
+        color: #4a5568;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
 
-  .folder-title:hover {
-    background-color: #f7fafc;
-  }
+    .folder-title:hover {
+        background-color: #f7fafc;
+    }
 
-  .folder-content {
-    border-left: 1px solid #e2e8f0;
-    margin-left: 6px;
-  }
+    .folder-content {
+        border-left: 1px solid #e2e8f0;
+        margin-left: 6px;
+    }
 
-  /* Page link styling */
-  .page-link {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-    color: #2d3748;
-    font-size: 0.9rem;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: background-color 0.15s ease;
-  }
+    /* Page link styling */
+    .page-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        color: #2d3748;
+        font-size: 0.9rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background-color 0.15s ease;
+    }
 
-  .page-link:hover {
-    background-color: #edf2f7;
-    color: #000;
-  }
+    .page-link:hover {
+        background-color: #edf2f7;
+        color: #000;
+    }
 
-  .page-link.active {
-    background-color: #ebf8ff;
-    color: #2b6cb0;
-    font-weight: 600;
-  }
+    .page-link.active {
+        background-color: #ebf8ff;
+        color: #2b6cb0;
+        font-weight: 600;
+    }
 
-  .folder-icon, .file-icon {
-    font-size: 0.85em;
-  }
+    .folder-icon, .file-icon {
+        font-size: 0.85em;
+    }
 </style>
