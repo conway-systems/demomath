@@ -1,6 +1,7 @@
 ---
 title: "Limits Test Page"
 description: "Optional description"
+path: "limits/test"
 ---
 
 hi

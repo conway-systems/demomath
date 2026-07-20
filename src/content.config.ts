@@ -9,6 +9,7 @@ const learn = defineCollection({
     }),
     schema: z.object({
         title: z.string(),
+        path: z.string(),
         description: z.string().optional(),
     }),
 });

@@ -7,7 +7,7 @@ export async function getStaticPaths() {
     const docs = await getCollection('learn');
 
     return docs.map(entry => ({
-        params: { slug: entry.id },
+        params: { slug: entry.data.path },
         props: { entry },
     }));
 }
@@ -17,22 +17,29 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 
 
-import Layout from "../../layouts/Layout.astro";
+import Layout from "../layouts/Layout.astro";
 import 'katex/dist/katex.min.css';
 ---
 
 <Layout title=`${entry.data.title} | demomath.org`>
-    <main style="margin: 0 auto; padding: 2rem">
+    <div class="doc-entry">
         <a href="/learn">← Back to learn</a>
         <hr />
         <h1>{entry.data.title}</h1>
         <article>
             <Content />
         </article>
-    </main>
+    </div>
 </Layout>
 
 <style is:global>
+
+    .doc-entry {
+        width: 80%;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
     .katex {
         display: block !important;
         text-align: center !important;

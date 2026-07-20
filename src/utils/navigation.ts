@@ -4,7 +4,7 @@ export interface NavNode {
     children: NavNode[];
 }
 
-export function buildNavTree(entries: { id: string; data: {title: string} }[]): NavNode[] {
+export function buildNavTree(entries: { id: string; data: { title: string, path: string } }[]): NavNode[] {
     const root: NavNode[] = [];
     
     for (const entry of entries) {
@@ -21,7 +21,7 @@ export function buildNavTree(entries: { id: string; data: {title: string} }[]): 
                     name: part,
                     children: [],
                     ...(isLast && {
-                        slug: entry.id,
+                        slug: entry.data.path,
                         name: entry.data.title
                     }),
                 };

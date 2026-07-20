@@ -1,106 +1,59 @@
 ---
-import { templateLiteral } from 'astro:schema';
-import type { NavNode } from '../utils/navigation'
-import { isActionError } from 'astro:actions';
-
-interface Props {
-    items: NavNode[];
-    currentPath: string;
-}
+import MenuContent from "./MenuContent.astro";
 
 const { items, currentPath } = Astro.props;
 ---
 
-<ul class="sidebar-list">
-    {items.map((item) => {
-        const isFolder = item.children && item.children.length > 0;
-        const isActive = currentPath === `/learn/${item.slug}`;
+<button class="sidebar-toggle" aria-controls="sidebar" aria-expanded="false">
+    Sidebar
+</button>
 
-        return (
-            <li class="sidebar-item">
-                {isFolder ? (
-                    <details open class="sidebar-folder">
-                        <summary class="folder-title">
-                            <span class="folder-icon">📁</span> {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
-                        </summary>
-                        <div class="folder-content">
-                            <Astro.self items={item.children} currentPath={currentPath} />
-                        </div>
-                    </details>
-                ) : (
-                    <a href={`/learn/${item.slug}`} class:list={['page-link', { active: isActive }]}>
-                        <span class="file-icon">📄</span> {item.name}
-                    </a>
-                )}
-            </li>
-        )
-    })}
-</ul>
+<div id="sidebar-backdrop" class="backdrop" aria-hidden="false"></div>
+
+<aside class="sidebar">
+    <MenuContent items={Astro.props.items} currentPath={Astro.props.currentPath}/>
+</aside>
+
 
 <style>
-    .sidebar-list {
-        list-style: none;
+    :root {
+        --top-bar-height: 55px;
+        --sidebar-width: min(80vw, 300px);
+    }
+
+    .backdrop {
+        position: fixed;
+        top: var(--top-bar-height);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 90;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .backdrop.is-active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: var(--top-bar-height);
+        left: 0;
+        bottom: 0;
+        width: var(--sidebar-width);
+        background-color: var(--background-color, #f9f9f9);
+        z-index: 100;
         overflow-y: auto;
-        padding-left: 12px;
-        margin: 0;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
     }
 
-    .sidebar-item {
-        margin: 6px 0;
-    }
-
-    /* Folder styling */
-    .sidebar-folder {
-        margin-bottom: 4px;
-    }
-
-    .folder-title {
-        font-weight: 600;
-        font-size: 0.95rem;
-        cursor: pointer;
-        user-select: none;
-        padding: 4px 6px;
-        border-radius: 4px;
-        color: #4a5568;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .folder-title:hover {
-        background-color: #f7fafc;
-    }
-
-    .folder-content {
-        border-left: 1px solid #e2e8f0;
-        margin-left: 6px;
-    }
-
-    /* Page link styling */
-    .page-link {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        text-decoration: none;
-        color: #2d3748;
-        font-size: 0.9rem;
-        padding: 4px 8px;
-        border-radius: 4px;
-        transition: background-color 0.15s ease;
-    }
-
-    .page-link:hover {
-        background-color: #edf2f7;
-        color: #000;
-    }
-
-    .page-link.active {
-        background-color: #ebf8ff;
-        color: #2b6cb0;
-        font-weight: 600;
-    }
-
-    .folder-icon, .file-icon {
-        font-size: 0.85em;
+    .sidebar-toggle {
+        position: sticky;
+        top: calc(10px + var(--top-bar-height));
+        left: calc(10px + var(--sidebar-width));
+        z-index: 110;
     }
 </style>

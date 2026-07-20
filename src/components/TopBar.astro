@@ -23,36 +23,40 @@ const { title = "demomath.org" } = Astro.props;
 </header>
 
 <style>
-  .top-bar {
-    background-color: #1a1a1a;
-    color: #ffffff;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+    .top-bar {
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+        position: sticky;
+        background-color: #1a1a1a;
+        color: #ffffff;
+        padding: 16px 32px;
+        height: 23px;
+        top: 0;
+        z-index: 50;
+    }
 
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-  .logo {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.25rem;
-  }
+    .logo {
+        color: #fff;
+        text-decoration: none;
+        font-size: 1.25rem;
+    }
 
-  .nav-links a {
-    color: #cccccc;
-    text-decoration: none;
-    margin-left: 1.5rem;
-    font-weight: 500;
-    transition: color 0.2s ease;
-  }
+    .nav-links a {
+        color: #cccccc;
+        text-decoration: none;
+        margin-left: 1.5rem;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
 
-  .nav-links a:hover {
-    color: #ffffff;
-  }
+    .nav-links a:hover {
+        color: #ffffff;
+    }
 </style>

@@ -1,7 +1,9 @@
 ---
 // src/layouts/Layout.astro
+//import '../styles/global.css'
+import '../styles/vars.css'
 import TopBar from '../components/TopBar.astro';
-import SideBar from '../components/SideBar.astro'
+import SideBar from '../components/SideBar.astro';
 
 interface Props {
     title: string;
@@ -15,6 +17,7 @@ import { buildNavTree } from "../utils/navigation";
 const allDocs = await getCollection('learn');
 const navTree = buildNavTree(allDocs);
 const currentPath = Astro.url.pathname;
+
 ---
 
 <!DOCTYPE html>
@@ -32,10 +35,7 @@ const currentPath = Astro.url.pathname;
     <body>
         <TopBar />
         <div class="layout-container">
-            <aside class="sidebar-wrapper">
-                <SideBar items={navTree} currentPath={currentPath} />
-            </aside>
-
+            <SideBar items={navTree} currentPath={currentPath} />
             <div class="main-wrapper">
                 <slot />
             </div>
@@ -47,23 +47,29 @@ const currentPath = Astro.url.pathname;
     </body>
 </html>
 
-<style is:global>
+<style>
+    
     .layout-container {
-        display: grid;
-        grid-template-columns: 260px minmax(0, 1fr);
-        min-height: 100vh;
-    }
-
-    .sidebar-wrapper {
-        position: sticky;
-        overflow-y: auto;
+        position: relative;
+        min-height: 1500px;
     }
 
     .main-wrapper {
-        margin: 2rem auto;
-        padding: 0 1rem;
+        margin: 0 auto;
+        padding: 0 0;
         overflow-y: auto;
-        width: 100%;
+        max-width: 100%;
+        width: 90%;
+    }
+</style>
+
+<style is:global>
+    html {
+        opacity: 1;
+        transition: opacity 0.15s ease-in;
+    }
+    html.js-ready {
+        opacity: 0;
     }
 
     p {
@@ -77,6 +83,8 @@ const currentPath = Astro.url.pathname;
     }
 
     footer {
-        padding: 1em;
+        padding: 0.1em 1em;
+        background-color: #1a1a1a;
+        color: white;
     }
 </style>
