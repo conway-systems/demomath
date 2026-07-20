@@ -11,7 +11,8 @@ const { title = "demomath.org" } = Astro.props;
 <header class="top-bar">
     <div class="container">
         <a href="/" class="logo">
-            <strong>{title}</strong>
+            <!-- <strong>{title}</strong> -->
+             <img src="/images/demomath.org_logo_white.png" alt="demomath.org logo" />
         </a>
         <nav class="nav-links">
             <a href="/">Home</a>
@@ -28,24 +29,32 @@ const { title = "demomath.org" } = Astro.props;
         position: sticky;
         background-color: #1a1a1a;
         color: #ffffff;
-        padding: 16px 32px;
-        height: 23px;
+        padding: 0px;
+        height: 55px;
         top: 0;
         z-index: 50;
     }
 
-    .container {
+    .top-bar .container {
         max-width: 1200px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        height: 100%;
+        padding: 0 2em;
     }
 
     .logo {
         color: #fff;
         text-decoration: none;
         font-size: 1.25rem;
+    }
+
+    .logo img {
+        width: 200px;
+        height: auto;
+        margin-top: 10px;
     }
 
     .nav-links a {

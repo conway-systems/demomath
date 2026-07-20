@@ -10,6 +10,7 @@ import MenuContent from "./MenuContent.astro";
 <div id="sidebar-backdrop" class="backdrop" aria-hidden="false"></div>
 
 <aside class="sidebar" id="sidebar">
+    <input type="search" placeholder="Search..." />
     <MenuContent items={Astro.props.items} currentPath={Astro.props.currentPath}/>
 </aside>
 
@@ -81,5 +82,11 @@ import MenuContent from "./MenuContent.astro";
     }
     html[sidebar-is-open="open"] .sidebar-toggle {
         left: calc(10px + var(--sidebar-width));
+    }
+
+    .sidebar input {
+        position: relative;
+        margin: 1em;
+        width: calc(100% - 2em);
     }
 </style>
