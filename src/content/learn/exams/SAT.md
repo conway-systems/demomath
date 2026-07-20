@@ -1,5 +1,5 @@
 ---
-title: SAT exam guide
+title: SAT guide
 path: exams/SAT
 ---
 

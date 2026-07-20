@@ -1,5 +1,5 @@
 ---
-title: GCSE exam guide
+title: GCSE guide
 path: exams/gcse
 ---
 
