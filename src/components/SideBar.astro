@@ -4,15 +4,35 @@ import MenuContent from "./MenuContent.astro";
 const { items, currentPath } = Astro.props;
 ---
 
-<button class="sidebar-toggle" aria-controls="sidebar" aria-expanded="false">
+<button class="sidebar-toggle" id="sidebar-toggler" aria-controls="sidebar" aria-expanded="true">
     Sidebar
 </button>
 
+
 <div id="sidebar-backdrop" class="backdrop" aria-hidden="false"></div>
 
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
     <MenuContent items={Astro.props.items} currentPath={Astro.props.currentPath}/>
 </aside>
+
+
+<script is:inline>
+    if (localStorage.getItem('sidebar-is-open') === 'open') {
+        document.documentElement.setAttribute('sidebar-is-open', 'open');
+    }
+</script>
+
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const button = document.getElementById('sidebar-toggler');
+
+    button?.addEventListener('click', () => {
+        const currentState = localStorage.getItem('sidebar-is-open');
+        const newState = currentState === 'open' ? 'closed' : 'open'
+        localStorage.setItem('sidebar-is-open', newState);
+        document.documentElement.setAttribute('sidebar-is-open', newState);
+    })
+</script>
 
 
 <style>
@@ -41,19 +61,27 @@ const { items, currentPath } = Astro.props;
     .sidebar {
         position: fixed;
         top: var(--top-bar-height);
-        left: 0;
+        left: calc(-1 * var(--sidebar-width));
         bottom: 0;
         width: var(--sidebar-width);
         background-color: var(--background-color, #f9f9f9);
         z-index: 100;
         overflow-y: auto;
         box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+        transition: left 0.3s ease;
+    }
+    html[sidebar-is-open="open"] .sidebar {
+        left: 0px;
     }
 
     .sidebar-toggle {
         position: sticky;
         top: calc(10px + var(--top-bar-height));
-        left: calc(10px + var(--sidebar-width));
+        left: 10px;
         z-index: 110;
+        transition: left 0.3s ease;
+    }
+    html[sidebar-is-open="open"] .sidebar-toggle {
+        left: calc(10px + var(--sidebar-width));
     }
 </style>
