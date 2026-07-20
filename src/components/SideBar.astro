@@ -53,7 +53,7 @@ const { items, currentPath } = Astro.props;
         pointer-events: none;
         transition: opacity 0.3s ease;
     }
-    .backdrop.is-active {
+    html[sidebar-is-open="open"] .backdrop {
         opacity: 1;
         pointer-events: auto;
     }
