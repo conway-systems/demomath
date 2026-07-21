@@ -4,6 +4,7 @@
 import '../styles/vars.css'
 import TopBar from '../components/TopBar.astro';
 import SideBar from '../components/SideBar.astro';
+import SideBarHead from '../components/SideBarHead.astro';
 
 const { title } = Astro.props;
 
@@ -27,6 +28,8 @@ const currentPath = Astro.url.pathname;
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{Astro.props.title}</title>
+
+        <SideBarHead />
     </head>
     <body>
         <TopBar />
