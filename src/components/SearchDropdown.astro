@@ -1,29 +1,64 @@
 ---
-import { templateLiteral } from 'astro:schema';
 import type { NavNode, SearchNode } from '../utils/navigation';
-import { buildSearchTree } from '../utils/navigation';
+import { buildSearchList } from '../utils/navigation';
 
 interface Props {
     items: NavNode[];
     currentPath: string;
     id: string;
+    maxElements: number;
 }
 
-const { items, id } = Astro.props;
+const { items, id, maxElements } = Astro.props;
 
-const entries = buildSearchTree(items);
-
-console.log(entries);
+const entries = buildSearchList(items);
 ---
 
-<ul id=`search-dropdown-${id}` hidden>
+<ul id=`search-dropdown-${id}` class="search-list search-closed" data-max-elements={maxElements}>
     {entries.map((entry) => {
         return (
-            <li hidden class='search-entry'>
-                <a href={`/${entry.slug}`}>
+            <li class='search-entry' hidden>
+                <a href={`/${entry.slug}`} class="search-link">
                     <span class="file-icon">📄</span> {entry.name}
                 </a>
             </li>
         )
     })}
 </ul>
+
+<script>
+    
+</script>
+
+<style define:vars={{ maxElements }}>
+    :root {
+        --search-entry-height: 28px;
+    }
+
+    .search-list {
+        list-style: none;
+        padding-left: 1em;
+        overflow: hidden;
+        transition: height 0.3s ease;
+        height: calc(var(--search-entry-height) * var(--maxElements));
+    }
+    .search-list.search-closed {
+        height: 0px;
+    }
+
+    .search-entry {
+        height: var(--search-entry-height);
+    }
+
+    .search-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        color: #2d3748;
+        font-size: 0.9rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background-color 0.15s ease;
+    }
+</style>

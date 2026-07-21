@@ -1,6 +1,8 @@
 ---
 import MenuContent from "./MenuContent.astro";
 import SearchDropdownAstroComponent from "./SearchDropdown.astro";
+
+const maxElements: number = 5;
 ---
 
 <button class="sidebar-toggle" id="sidebar-toggler" aria-controls="sidebar" aria-expanded="true">
@@ -15,7 +17,7 @@ import SearchDropdownAstroComponent from "./SearchDropdown.astro";
         <input type="search" id="sidebar-search" placeholder="Search..." />
         <button id="sidebar-search-button">Go</button>
     </div>
-    <SearchDropdownAstroComponent items={Astro.props.items} currentPath={Astro.props.currentPath} id="sidebar" />
+    <SearchDropdownAstroComponent items={Astro.props.items} currentPath={Astro.props.currentPath} id="sidebar" maxElements={maxElements} />
     <hr style="margin: 0px 1em;">
     <MenuContent items={Astro.props.items} currentPath={Astro.props.currentPath} />
 </aside>
@@ -28,6 +30,8 @@ import SearchDropdownAstroComponent from "./SearchDropdown.astro";
 </script>
 
 <script>
+    import { searchDropdown } from "../utils/navigation";
+
     const button = document.getElementById('sidebar-toggler');
 
     button?.addEventListener('click', () => {
@@ -39,6 +43,17 @@ import SearchDropdownAstroComponent from "./SearchDropdown.astro";
 
     const search_bar = document.getElementById('sidebar-search') as HTMLInputElement;
     const search_button = document.getElementById('sidebar-search-button');
+
+    const dropdown = document.getElementById('search-dropdown-sidebar');
+    if (!dropdown) throw "Could not find element with id 'search-dropdown-sidebar'";
+    const maxElements = Number(dropdown.dataset.maxElements);
+
+    search_button?.addEventListener('click', () => {
+        searchDropdown(dropdown, search_bar.value, maxElements);
+    })
+    search_bar?.addEventListener('input', () => {
+        searchDropdown(dropdown, search_bar.value, maxElements);
+    })
 </script>
 
 
