@@ -1,0 +1,11 @@
+---
+import BasicLayout from "../../../layouts/BasicLayout.astro"
+import { getCollection } from 'astro:content';
+import Graphing2d from "../../../components/Graphing2d.astro";
+
+const docs = await getCollection('learn');
+---
+
+<BasicLayout title="Graphing | demomath.org" genSidebar={false}>
+    <Graphing2d />
+</BasicLayout>

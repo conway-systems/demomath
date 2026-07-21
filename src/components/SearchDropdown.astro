@@ -37,10 +37,11 @@ const entries = buildSearchList(items);
 
     .search-list {
         list-style: none;
-        padding-left: 1em;
         overflow: hidden;
         transition: height 0.3s ease;
         height: calc(var(--search-entry-height) * var(--maxElements));
+        margin: 0.5em 1em;
+        padding: 0;
     }
     .search-list.search-closed {
         height: 0px;
@@ -60,5 +61,6 @@ const entries = buildSearchList(items);
         padding: 4px 8px;
         border-radius: 4px;
         transition: background-color 0.15s ease;
+        text-wrap: nowrap;
     }
 </style>

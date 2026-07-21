@@ -86,7 +86,7 @@ const maxElements: number = 5;
     }
 
     .sidebar-toggle {
-        position: sticky;
+        position: fixed;
         top: calc(10px + var(--top-bar-height));
         left: 10px;
         z-index: 110;
@@ -103,6 +103,7 @@ const maxElements: number = 5;
         display: grid;
         grid-template-columns: auto auto;
         grid-gap: 10px;
+        margin-bottom: 0;
     }
     .sidebar .search-container input {
         width: 100%;

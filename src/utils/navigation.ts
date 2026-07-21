@@ -1,5 +1,4 @@
 import Levenshtein from 'fast-levenshtein';
-import jaroWinkler from 'jaro-winkler';
 
 export interface NavNode {
     name: string;

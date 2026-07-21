@@ -6,14 +6,26 @@ import TopBar from '../components/TopBar.astro';
 import SideBar from '../components/SideBar.astro';
 import SideBarHead from '../components/SideBarHead.astro';
 
-const { title } = Astro.props;
+
+interface Props {
+    title: string;
+    genSidebar: boolean;
+}
+
+const { title, genSidebar } = Astro.props;
 
 
 import { getCollection } from 'astro:content';
 import { buildNavTree } from "../utils/navigation";
-const allDocs = await getCollection('learn');
-const navTree = buildNavTree(allDocs);
+import type { NavNode } from '../utils/navigation';
+
+let navTree: NavNode[] = [];
 const currentPath = Astro.url.pathname;
+
+if (genSidebar) {
+    const allDocs = await getCollection('learn')
+    navTree = buildNavTree(allDocs);
+}
 
 ---
 
@@ -27,17 +39,15 @@ const currentPath = Astro.url.pathname;
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{Astro.props.title}</title>
+        <title>{title}</title>
 
         <SideBarHead />
     </head>
     <body>
         <TopBar />
         <div class="layout-container">
-            <SideBar items={navTree} currentPath={currentPath} />
-            <div class="main-wrapper">
-                <slot />
-            </div>
+            {genSidebar && (<SideBar items={navTree} currentPath={currentPath} />)}
+            <slot />
         </div>
 
         <footer>
@@ -51,14 +61,6 @@ const currentPath = Astro.url.pathname;
     .layout-container {
         position: relative;
         min-height: calc(100vh - var(--top-bar-height) - var(--footer-height));
-    }
-
-    .main-wrapper {
-        margin: 0 auto;
-        padding: 0 0;
-        overflow-y: auto;
-        max-width: 100%;
-        width: 90%;
     }
 
     body {
