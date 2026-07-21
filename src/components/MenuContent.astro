@@ -1,13 +1,14 @@
 ---
 import { templateLiteral } from 'astro:schema';
-import type { NavNode } from '../utils/navigation'
+import type { NavNode } from '../utils/navigation';
 
 interface Props {
     items: NavNode[];
     currentPath: string;
+    menuId: string;
 }
 
-const { items, currentPath } = Astro.props;
+const { items, currentPath, menuId } = Astro.props;
 ---
 
 <ul class="sidebar-list">
@@ -25,7 +26,7 @@ const { items, currentPath } = Astro.props;
                             <span class="arrow-icon">˃</span>
                         </summary>
                         <div class="folder-content">
-                            <Astro.self items={item.children} currentPath={currentPath} />
+                            <Astro.self items={item.children} currentPath={currentPath} menuId={menuId} />
                         </div>
                     </details>
                 ) : (
@@ -114,6 +115,7 @@ const { items, currentPath } = Astro.props;
 </style>
 
 <script is:inline>
+
     (function () {
         const folders = document.querySelectorAll('.sidebar-folder');
         folders.forEach((folder) => {

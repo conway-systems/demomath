@@ -10,8 +10,12 @@ import MenuContent from "./MenuContent.astro";
 <div id="sidebar-backdrop" class="backdrop" aria-hidden="false"></div>
 
 <aside class="sidebar" id="sidebar">
-    <input type="search" placeholder="Search..." />
-    <MenuContent items={Astro.props.items} currentPath={Astro.props.currentPath}/>
+    <div class="search-container">
+        <input type="search" id="sidebar-search" placeholder="Search..." />
+        <button id="sidebar-search-button">Go</button>
+    </div>
+    <hr style="margin: 0px 1em;">
+    <MenuContent items={Astro.props.items} currentPath={Astro.props.currentPath} menuId="sidebar-menu"/>
 </aside>
 
 
@@ -22,7 +26,8 @@ import MenuContent from "./MenuContent.astro";
 </script>
 
 <script>
-    const sidebar = document.getElementById('sidebar');
+    import Levenshtein from 'fast-levenshtein';
+
     const button = document.getElementById('sidebar-toggler');
 
     button?.addEventListener('click', () => {
@@ -30,22 +35,20 @@ import MenuContent from "./MenuContent.astro";
         const newState = currentState === 'open' ? 'closed' : 'open'
         localStorage.setItem('sidebar-is-open', newState);
         document.documentElement.setAttribute('sidebar-is-open', newState);
-    })
+    });
+
+    const search_bar = document.getElementById('sidebar-search') as HTMLInputElement;
+    const search_button = document.getElementById('sidebar-search-button');
 </script>
 
 
 <style>
-    :root {
-        --top-bar-height: 55px;
-        --sidebar-width: min(80vw, 300px);
-    }
-
     .backdrop {
         position: fixed;
         top: var(--top-bar-height);
         left: 0;
         right: 0;
-        bottom: 0;
+        bottom: var(--footer-height);
         background-color: rgba(0, 0, 0, 0.4);
         z-index: 90;
         opacity: 0;
@@ -84,9 +87,19 @@ import MenuContent from "./MenuContent.astro";
         left: calc(10px + var(--sidebar-width));
     }
 
-    .sidebar input {
+    .sidebar .search-container {
         position: relative;
         margin: 1em;
         width: calc(100% - 2em);
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-gap: 10px;
+    }
+    .sidebar .search-container input {
+        width: 100%;
+        padding: 2px;
+    }
+    .sidebar .search-container button {
+        position: relative;
     }
 </style>

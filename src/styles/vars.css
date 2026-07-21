@@ -1,3 +1,6 @@
 :root {
     --background-color: #f9f9f9ff;
+    --top-bar-height: 55px;
+    --footer-height: 55px;
+    --sidebar-width: min(80vw, 300px);
 }

@@ -5,10 +5,6 @@ import '../styles/vars.css'
 import TopBar from '../components/TopBar.astro';
 import SideBar from '../components/SideBar.astro';
 
-interface Props {
-    title: string;
-}
-
 const { title } = Astro.props;
 
 
@@ -30,7 +26,7 @@ const currentPath = Astro.url.pathname;
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{title}</title>
+        <title>{Astro.props.title}</title>
     </head>
     <body>
         <TopBar />
@@ -51,7 +47,7 @@ const currentPath = Astro.url.pathname;
     
     .layout-container {
         position: relative;
-        min-height: 1500px;
+        min-height: calc(100vh - var(--top-bar-height) - var(--footer-height));
     }
 
     .main-wrapper {
@@ -60,6 +56,19 @@ const currentPath = Astro.url.pathname;
         overflow-y: auto;
         max-width: 100%;
         width: 90%;
+    }
+
+    body {
+        margin: 0;
+        font-family: sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    footer {
+        padding: 0.1em 1em;
+        background-color: #1a1a1a;
+        color: white;
+        height: 55px;
     }
 </style>
 
@@ -74,17 +83,5 @@ const currentPath = Astro.url.pathname;
 
     p {
         font-family: 'Roboto';
-    }
-
-    body {
-        margin: 0;
-        font-family: sans-serif;
-        background-color: #f9f9f9;
-    }
-
-    footer {
-        padding: 0.1em 1em;
-        background-color: #1a1a1a;
-        color: white;
     }
 </style>
