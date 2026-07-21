@@ -1,6 +1,6 @@
 ---
 title: GCSE guide
-path: exams/gcse
+path: exams/GCSE
 ---
 
 Hi

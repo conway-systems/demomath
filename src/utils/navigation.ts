@@ -4,6 +4,11 @@ export interface NavNode {
     children: NavNode[];
 }
 
+export interface SearchNode {
+    name: string;
+    slug: string;
+}
+
 export function buildNavTree(entries: { id: string; data: { title: string, path: string } }[]): NavNode[] {
     const root: NavNode[] = [];
     
@@ -33,4 +38,23 @@ export function buildNavTree(entries: { id: string; data: { title: string, path:
     }
 
     return root;
+}
+
+export function buildSearchTree(root: NavNode[]) : SearchNode[] {
+    let searchNodes: SearchNode[] = [];
+    let stack: NavNode[] = [...root];
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        const isFolder = node.children && node.children.length > 0;
+
+        if (!isFolder) {
+            const outSearchNode: SearchNode = {name: node.name, slug: node.slug!};
+            searchNodes.push(outSearchNode);
+        } else {
+            node.children.forEach((item) => { stack.push(item); });
+        }
+    }
+
+    return searchNodes;
 }

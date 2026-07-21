@@ -1,0 +1,29 @@
+---
+import { templateLiteral } from 'astro:schema';
+import type { NavNode, SearchNode } from '../utils/navigation';
+import { buildSearchTree } from '../utils/navigation';
+
+interface Props {
+    items: NavNode[];
+    currentPath: string;
+    id: string;
+}
+
+const { items, id } = Astro.props;
+
+const entries = buildSearchTree(items);
+
+console.log(entries);
+---
+
+<ul id=`search-dropdown-${id}` hidden>
+    {entries.map((entry) => {
+        return (
+            <li hidden class='search-entry'>
+                <a href={`/${entry.slug}`}>
+                    <span class="file-icon">📄</span> {entry.name}
+                </a>
+            </li>
+        )
+    })}
+</ul>

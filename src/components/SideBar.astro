@@ -1,5 +1,6 @@
 ---
 import MenuContent from "./MenuContent.astro";
+import SearchDropdownAstroComponent from "./SearchDropdown.astro";
 ---
 
 <button class="sidebar-toggle" id="sidebar-toggler" aria-controls="sidebar" aria-expanded="true">
@@ -14,8 +15,9 @@ import MenuContent from "./MenuContent.astro";
         <input type="search" id="sidebar-search" placeholder="Search..." />
         <button id="sidebar-search-button">Go</button>
     </div>
+    <SearchDropdownAstroComponent items={Astro.props.items} currentPath={Astro.props.currentPath} id="sidebar" />
     <hr style="margin: 0px 1em;">
-    <MenuContent items={Astro.props.items} currentPath={Astro.props.currentPath} menuId="sidebar-menu"/>
+    <MenuContent items={Astro.props.items} currentPath={Astro.props.currentPath} />
 </aside>
 
 
@@ -26,8 +28,6 @@ import MenuContent from "./MenuContent.astro";
 </script>
 
 <script>
-    import Levenshtein from 'fast-levenshtein';
-
     const button = document.getElementById('sidebar-toggler');
 
     button?.addEventListener('click', () => {
@@ -48,7 +48,7 @@ import MenuContent from "./MenuContent.astro";
         top: var(--top-bar-height);
         left: 0;
         right: 0;
-        bottom: var(--footer-height);
+        bottom: 0;
         background-color: rgba(0, 0, 0, 0.4);
         z-index: 90;
         opacity: 0;

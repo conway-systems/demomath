@@ -5,10 +5,9 @@ import type { NavNode } from '../utils/navigation';
 interface Props {
     items: NavNode[];
     currentPath: string;
-    menuId: string;
 }
 
-const { items, currentPath, menuId } = Astro.props;
+const { items, currentPath } = Astro.props;
 ---
 
 <ul class="sidebar-list">
@@ -21,12 +20,12 @@ const { items, currentPath, menuId } = Astro.props;
                 {isFolder ? (
                     <details class="sidebar-folder" id={`folder-${item.name}`}>
                         <summary class="folder-title">
-                            <span class="folder-icon">📁</span> 
+                            <span class="folder-icon">📁</span>
                             {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
                             <span class="arrow-icon">˃</span>
                         </summary>
                         <div class="folder-content">
-                            <Astro.self items={item.children} currentPath={currentPath} menuId={menuId} />
+                            <Astro.self items={item.children} currentPath={currentPath} />
                         </div>
                     </details>
                 ) : (
