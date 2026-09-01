@@ -10,15 +10,14 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        nodejs = pkgs.nodejs_23;
-        pnpm = pkgs.pnpm_9;
+        nodejs = pkgs.nodejs;
+        pnpm = pkgs.pnpm;
       in
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             nodejs
             pnpm
-            nodePackages_latest.vercel
           ];
 
           shellHook = ''
@@ -27,7 +26,7 @@
         };
 
         packages.default = pkgs.stdenv.mkDerivation (finalAttrs: {
-          pname = "astro-site";
+          pname = "devel";
           version = "0.0.1";
           src = ./.;
 
@@ -38,6 +37,7 @@
 
           pnpmDeps = pnpm.fetchDeps {
             inherit (finalAttrs) pname version src;
+            fetcherVersion = 4;
             hash = "sha256-1id+voa1Bil+2YUPa7kMwf1YLCZ2lT1Fp2S31pD8UyY=";
           };
 
