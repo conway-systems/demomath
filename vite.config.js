@@ -1,7 +1,7 @@
 export default {
   build: {
     rolldownOptions: {
-      external: ["katex"]
+      external: [/^katex/]
     }
   }
 }
