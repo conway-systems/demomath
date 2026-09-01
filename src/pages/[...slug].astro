@@ -15,11 +15,11 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 
 
-import Layout from "../layouts/Layout.astro";
+import PageLayout from "../layouts/PageLayout.astro";
 import 'katex/dist/katex.min.css';
 ---
 
-<Layout title=`${entry.data.title} | demomath.org`>
+<PageLayout title=`${entry.data.title} | demomath.org`, genSidebar={true}>
     <div class="doc-entry">
         <a href="/learn">← Back to learn</a>
         <hr />
@@ -28,7 +28,7 @@ import 'katex/dist/katex.min.css';
             <Content />
         </article>
     </div>
-</Layout>
+</PageLayout>
 
 <style is:global>
 

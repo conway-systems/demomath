@@ -6,6 +6,18 @@ interface Props {
 }
 
 const { title = "demomath.org" } = Astro.props;
+
+interface Link {
+    name: string;
+    href: string;
+}
+const links: Link[] = [
+    {name: "Home", href: "/"}, 
+    {name: "Learn", href: "/learn"}, 
+    {name: "Calculators", href: "/calculator"},
+    {name: "About", href: "/about"},
+    {name: "Contact", href: "/contact"}
+]
 ---
 
 <header class="top-bar">
@@ -15,11 +27,9 @@ const { title = "demomath.org" } = Astro.props;
              <img src="/images/demomath.org_logo_white_new.png" alt="demomath.org logo" />
         </a>
         <nav class="nav-links">
-            <a href="/">Home</a>
-            <a href="/learn">Learn</a>
-            <a href="/calculator">Calculators</a>
-            <a href="/about">About</a>
-            <a href="/contact">Contact</a>
+            {
+                links.map((link) => <a href={`${link.href}`}>{link.name}</a>)
+            }
         </nav>
     </div>
 </header>
