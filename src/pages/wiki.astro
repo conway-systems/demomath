@@ -1,0 +1,97 @@
+---
+
+---
+
+<div class="TopBar">
+
+</div>
+<div class="entry-container" id="entry-container">
+  <div class="nav" />
+  <div class="markers" />
+  <div class="innerhtml" />
+</div>
+
+
+<style is:global>
+
+
+  .entry-container {
+    display: grid;
+    grid-template-areas:
+      "nav nav"
+      "markers innerhtml";
+    grid-template-columns: 1fr 5fr;
+    gap: 3px;
+    padding: 5px;
+    background-color: blue;
+    min-height: 100%;
+  }
+
+  .entry-container div {
+    background-color: white;
+  }
+
+  .entry-container .nav {
+    grid-area: nav;
+    height: min-content;
+  }
+
+  .entry-container .markers {
+    grid-area: markers;
+  }
+
+  .entry-container .innerhtml {
+    grid-area: innerhtml;
+    padding: 5px;
+  }
+
+  .entry-container .innerhtml .columns-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-block: 1rem;
+  }
+
+  .entry-container .innerhtml .column {
+    min-width: 0;
+  }
+
+  .entry-container .innerhtml img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>
+
+
+<script>
+  import { demoscript, WikiParsed, fetch_wiki_entry } from "../components/demoscript"
+
+  function inject_html(container: HTMLElement, entry: WikiParsed) {
+    const nav_container = container.querySelector(".nav");
+    if (!nav_container) throw "Could not find nav-container in entry-container";
+    nav_container.innerHTML = entry.get_nav_html();
+
+    const marker_container = container.querySelector(".markers");
+    if (!marker_container) throw "Could not find marker-container in entry-container";
+    marker_container.innerHTML = entry.get_markers_html();
+
+    const html_container = container.querySelector(".innerhtml");
+    if (!html_container) throw "Could not find html-container in entry-container";
+    html_container.innerHTML = entry.get_inner_html();
+  }
+
+  function process_entry(raw_val: string) {
+    let parsed: WikiParsed = demoscript.parse(raw_val);
+
+    let container = document.getElementById("entry-container");
+    if (!container) throw "Unable to find entry-container for wiki parsing";
+
+    inject_html(container, parsed);
+  }
+
+  let raw_val = fetch_wiki_entry("");
+  
+  process_entry(raw_val);
+
+</script>

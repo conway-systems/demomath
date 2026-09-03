@@ -1,0 +1,35 @@
+test title
+
+# heading 1
+
+:::
+this is separated
+|||
+\|||
+into columns
+:::
+
+## heading 2
+
+:::
+this is also
+separated into
+columns, but 3
+|||
+i dont know what to put in this box
+
+
+
+yeah
+|||
+images!
+
+it **should** follow the markdown spec, other than the obvious sectioning
+![Example image](https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Cape_Otway_%28AU%29%2C_Cape_Otway_Lighthouse%2C_Telegraph_Station_--_2019_--_1179.jpg/1280px-Cape_Otway_%28AU%29%2C_Cape_Otway_Lighthouse%2C_Telegraph_Station_--_2019_--_1179.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail "A house")
+:::
+
+# heading 3
+this is not separated into columns!
+
+hopefully, the columns should automatically arrange themselves by size
+and by device size, but it isn't really a guaranteed yet 
