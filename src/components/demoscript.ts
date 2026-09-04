@@ -1,4 +1,3 @@
-import { string } from 'astro:schema';
 import { marked } from 'marked';
 import { gfmHeadingId } from 'marked-gfm-heading-id';
 marked.use(gfmHeadingId());
@@ -40,6 +39,8 @@ class WikiRow {
   }
 
   public get_html() : string {
+    // iterate over each item and append it's innerhtml as a column div
+
     return `
     <div class="columns-container">
       ${
@@ -78,8 +79,6 @@ export class WikiParsed {
   }
 
   public get_markers_html() {
-    
-    
     let html: string = "";
     this.markers.forEach((marker) => {
       html += marker.get_html();
@@ -137,7 +136,7 @@ export class demoscript {
     
     // take whats after title and strip beginning newlines
     let content_text: string = text.substring(content_offset)
-                                   .replace(/\n+/, "");
+                                   .replace(/^\n+/, "");
     
 
     // ugh
@@ -160,7 +159,7 @@ export class demoscript {
     })
 
 
-    console.log(rows_arr);
+    //console.log(rows_arr);
 
 
     // scanning for markers
@@ -178,7 +177,7 @@ export class demoscript {
     });
 
 
-    console.log(markers);
+    //console.log(markers);
     let out: WikiParsed = new WikiParsed(title, markers, rows_arr);
 
 
