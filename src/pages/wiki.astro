@@ -45,15 +45,20 @@
     padding: 5px;
   }
 
+  /* .entry-container .innerhtml .columns-container {
+    
+  }  */
   .entry-container .innerhtml .columns-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 1.5rem;
     margin-block: 1rem;
   }
 
+  /* sizing is being handled in components/demoscript.ts:WikiCol,
+     this is just for stylisation */
   .entry-container .innerhtml .column {
-    min-width: 0;
+    /* flex: 1 1 0px; */
   }
 
   .entry-container .innerhtml img {

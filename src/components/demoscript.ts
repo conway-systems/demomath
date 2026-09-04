@@ -1,12 +1,14 @@
+"use strict";
+
 import { marked } from 'marked';
 import { gfmHeadingId } from 'marked-gfm-heading-id';
 marked.use(gfmHeadingId());
 
 
 class WikiMarker {
-  public label: string = "";
-  public anchor: string = "";
-  public indent: number = 0;
+  label: string = "";
+  anchor: string = "";
+  indent: number = 0;
 
   constructor(label: string, anchor: string, indent: number) {
     this.label = label;
@@ -27,14 +29,35 @@ class WikiMarker {
   }
 }
 
-class WikiRow {
-  cols: Array<string> = [];
+class WikiCol {
+  value: string = "";
+  width: string = "0";
 
-  constructor(cols: Array<string>) {
+  constructor(value: string, width?: string | null) {
+    this.value = value;
+    if (width)
+      this.width = width;
+  }
+
+  public get_html() : string {
+    return `
+    <div class="column" style="
+      flex: ${this.width == "0" ? "1" : "0"} ${this.width == "0" ? "1" : "0"} ${this.width};
+    ">
+      ${this.value}
+    </div>
+    `
+  }
+}
+
+class WikiRow {
+  cols: Array<WikiCol> = [];
+
+  constructor(cols: Array<WikiCol>) {
     this.cols = cols;
   }
   
-  add_child(child: string) {
+  add_child(child: WikiCol) {
     this.cols.push(child);
   }
 
@@ -44,15 +67,11 @@ class WikiRow {
     return `
     <div class="columns-container">
       ${
-        ((cols: Array<string>) => {
+        ((cols: Array<WikiCol>) => {
           let out: string = "";
 
           cols.forEach((value) => {
-            out += `
-            <div class="column">
-              ${value}
-            </div>
-            `
+            out += value.get_html();
           })
 
           return out;
@@ -118,21 +137,21 @@ export class demoscript {
 
     // scanning for title
     // don't need to scan for carriage returns, theyve been stripped
-    let split = text.split(/\n/);
+    //let split = text.split(/\n/);
     let content_offset: number = 0;
     // using some for early returns
     // blame stackoverflow
-    split.some((item) => {
-      if (item.length == 0) {
-        content_offset++;
-        return false;
-      } else {
-        title = item;
-        return true;
-      }
-    });
-    if (title == "") throw "Could not find any text to make a title"
-    content_offset += title.length;
+    // split.some((item) => {
+    //   if (item.length == 0) {
+    //     content_offset++;
+    //     return false;
+    //   } else {
+    //     title = item;
+    //     return true;
+    //   }
+    // });
+    // if (title == "") throw "Could not find any text to make a title"
+    // content_offset += title.length;
     
     // take whats after title and strip beginning newlines
     let content_text: string = text.substring(content_offset)
@@ -141,22 +160,60 @@ export class demoscript {
 
     // ugh
     // matches the beginning or :::, and matches the end or :::
-    let row_regex = /(?:(?<=^|\n)(?<!\\):::\n?|^)([\s\S]+?)(?=\n?(?<!\\):::|$)/g;
+    // include the leading \n since it is needed for the arguments
+    let row_regex = /(?:(?<=^|\n)(?<!\\):::|^)(\n?[\s\S]+?)(?=\n?(?<!\\):::|$)/g;
 
     //let col_regex = /^\|\|\|\n([\s\S]*?)\n(?<!\\)\|\|\|/gm;
     content_text.matchAll(row_regex).forEach((value) => {
       // take only the inner capture
       let row: WikiRow = new WikiRow([]);
 
-      let row_split = value[1].split(/(?<=^|\n)(?<!\\)\|\|\|\n*/);
+      let row_split = value[1].split(/(?<=^|\n)(?<!\\)\|\|\|/);
       row_split.forEach((value) => {
-        row.add_child(
-          marked.parse(value).toString()
+        console.log(value);
+
+        // take the first line for arguments (this follows the ||| or :::)
+        let line1 = (() => {
+          let tmp_split = value.split("\n", 1);
+          if (tmp_split.length == 1) 
+            return tmp_split[0];
+          return "";
+        })();
+
+        // match everything like blah=blah
+        let args_regex = /\b.+?\=\s*("[^"]*"|'[^']*'|[^,\n]+)/g;
+        console.log(line1.matchAll(args_regex).toArray());
+        let args_strs = line1.matchAll(args_regex).toArray().map((value) => value[0].trim().toString());
+        let args: Map<string, string> = new Map();
+
+        args_strs.forEach((value) => {
+          let key = value.split("=")[0];
+          // trims past the equals, replaces beginning quote and end quote
+          let v = value.substring(key.length+1).trim().replace(/^["']/g, "").replace(/\!\\["']$/g, "");
+          
+          args.set(key.trim(), v);
+        });
+
+        console.log(args);
+
+        let width: string | null = (() : string | null => {
+          let width_str = args.get("width");
+          if (width_str)
+            return width_str
+          return null
+        })();
+
+        let col = new WikiCol(
+          marked.parse(value.substring(line1.length)).toString(),
+          width
         );
+        row.add_child( col );
       })
 
       rows_arr.push(row);
     })
+
+    console.log(rows_arr);
 
 
     //console.log(rows_arr);
@@ -196,15 +253,17 @@ export class demoscript {
 // until the api is set up
 export function fetch_wiki_entry(id: string) : string {
   return `
-test title
+title=test title, topic='test', subtopic="te,st\\""
 
 # heading 1
 
 :::
 this is separated
-|||
+||| width=30%
 \\|||
 into columns
+
+this one is _30% wide_
 :::
 
 ## heading 2
@@ -219,8 +278,8 @@ i dont know what to put in this box
 
 
 yeah
-|||
-images!
+||| width=700px
+images! (this column is _700px wide_)
 
 it **should** follow the markdown spec, other than the obvious sectioning
 ![Example image](https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Cape_Otway_%28AU%29%2C_Cape_Otway_Lighthouse%2C_Telegraph_Station_--_2019_--_1179.jpg/1280px-Cape_Otway_%28AU%29%2C_Cape_Otway_Lighthouse%2C_Telegraph_Station_--_2019_--_1179.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail "A house")
@@ -230,6 +289,5 @@ it **should** follow the markdown spec, other than the obvious sectioning
 this is not separated into columns!
 
 hopefully, the columns should automatically arrange themselves by size
-and by device size, but it isn't really a guaranteed yet 
-  `;
+and by device size, but it isn't really a guaranteed yet `;
 }
