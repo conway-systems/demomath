@@ -84,17 +84,22 @@ class WikiRow {
 
 export class WikiParsed {
   title: string = "";
+  topic: string = "";
   markers: Array<WikiMarker> = [];
   cols: Array<WikiRow> = [];
 
-  constructor(title: string, markers: Array<WikiMarker>, cols: Array<WikiRow>) {
+  constructor(title: string, topic: string, markers: Array<WikiMarker>, cols: Array<WikiRow>) {
     this.title = title;
+    this.topic = topic;
     this.markers = markers;
     this.cols = cols;  
   }
 
   public get_nav_html() {
-    return `<h2>${this.title}</h2>`;
+    return `
+    <h2>${this.title}</h2>
+    <h3>${this.topic}</h3>
+    `;
   }
 
   public get_markers_html() {
@@ -127,10 +132,10 @@ function stringToAnchor(str: string) : string {
 
 export class demoscript {
   static parse(text: String) : WikiParsed {
-    //text = text.replaceAll("\r\n", "\n");
     text = text.replaceAll("\r", "");
 
     let title: string = "";
+    let topic: string = "";
     let markers: Array<WikiMarker> = [];
     let rows_arr: Array<WikiRow> = [];
 
@@ -139,19 +144,6 @@ export class demoscript {
     // don't need to scan for carriage returns, theyve been stripped
     //let split = text.split(/\n/);
     let content_offset: number = 0;
-    // using some for early returns
-    // blame stackoverflow
-    // split.some((item) => {
-    //   if (item.length == 0) {
-    //     content_offset++;
-    //     return false;
-    //   } else {
-    //     title = item;
-    //     return true;
-    //   }
-    // });
-    // if (title == "") throw "Could not find any text to make a title"
-    // content_offset += title.length;
     
     // take whats after title and strip beginning newlines
     let content_text: string = text.substring(content_offset)
@@ -163,14 +155,12 @@ export class demoscript {
     // include the leading \n since it is needed for the arguments
     let row_regex = /(?:(?<=^|\n)(?<!\\):::|^)(\n?[\s\S]+?)(?=\n?(?<!\\):::|$)/g;
 
-    //let col_regex = /^\|\|\|\n([\s\S]*?)\n(?<!\\)\|\|\|/gm;
-    content_text.matchAll(row_regex).forEach((value) => {
+    content_text.matchAll(row_regex).forEach((value, index1) => {
       // take only the inner capture
       let row: WikiRow = new WikiRow([]);
 
       let row_split = value[1].split(/(?<=^|\n)(?<!\\)\|\|\|/);
-      row_split.forEach((value) => {
-        console.log(value);
+      row_split.forEach((value, index2) => {
 
         // take the first line for arguments (this follows the ||| or :::)
         let line1 = (() => {
@@ -181,27 +171,50 @@ export class demoscript {
         })();
 
         // match everything like blah=blah
-        let args_regex = /\b.+?\=\s*("[^"]*"|'[^']*'|[^,\n]+)/g;
-        console.log(line1.matchAll(args_regex).toArray());
+        // must begin with a word
+        let args_regex = /\w.+?\=\s*("[^"]*"|'[^']*'|[^,\n]+)/g;
         let args_strs = line1.matchAll(args_regex).toArray().map((value) => value[0].trim().toString());
         let args: Map<string, string> = new Map();
 
         args_strs.forEach((value) => {
           let key = value.split("=")[0];
           // trims past the equals, replaces beginning quote and end quote
-          let v = value.substring(key.length+1).trim().replace(/^["']/g, "").replace(/\!\\["']$/g, "");
+          let v = value.substring(key.length+1).trim().replace(/^["']|["']$/g, "");;
+          console.log(v);
           
           args.set(key.trim(), v);
         });
 
-        console.log(args);
-
+        // checking against the width entry in args
+        // sorry this is a useless comment
         let width: string | null = (() : string | null => {
           let width_str = args.get("width");
           if (width_str)
             return width_str
           return null
         })();
+
+
+
+        // Getting details for the header
+        // title, topic (to later be subtitle and links)
+        if (index1 == 0 && index2 == 0) {
+          let title_str = args.get("title");
+          if (title_str)
+            title = title_str;
+          else
+            console.warn("no title provided");
+
+          let topic_str = args.get("topic");
+          if (topic_str)
+            topic = topic_str;
+          else
+            console.warn("no topic provided");
+        }
+
+        console.log(args);
+
+
 
         let col = new WikiCol(
           marked.parse(value.substring(line1.length)).toString(),
@@ -213,29 +226,21 @@ export class demoscript {
       rows_arr.push(row);
     })
 
-    console.log(rows_arr);
-
-
-    //console.log(rows_arr);
 
 
     // scanning for markers
     let markers_regex = /^\#+.+/gm;
     content_text.matchAll(markers_regex).forEach((value) => {
-      //console.log(value[0]);
       let label = value[0].replace(/^\#+\s*/, "");
-      //console.log(label);
       let indent_level = value[0].match(/^\#+/)![0].length;
-      //console.log(indent_level);
       let anchorified = stringToAnchor(value[0]);
-      //console.log(anchorified);
 
       markers.push( new WikiMarker(label, anchorified, indent_level) );
     });
 
 
     //console.log(markers);
-    let out: WikiParsed = new WikiParsed(title, markers, rows_arr);
+    let out: WikiParsed = new WikiParsed(title, topic, markers, rows_arr);
 
 
     return out;
