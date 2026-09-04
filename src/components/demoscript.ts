@@ -18,7 +18,7 @@ class WikiMarker {
     let per_indent: string = "10px";
 
     return `
-    <a href="#${this.anchor}>
+    <a href="#${this.anchor}">
       <div class="marker">
         <p style="margin-left: calc(${this.indent} * ${per_indent});">${this.label}</p>
       </div>
