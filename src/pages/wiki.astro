@@ -38,6 +38,7 @@
 
   .entry-container .markers {
     grid-area: markers;
+    min-width: 150px;
   }
 
   .entry-container .innerhtml {
@@ -58,13 +59,14 @@
   /* sizing is being handled in components/demoscript.ts:WikiCol,
      this is just for stylisation */
   .entry-container .innerhtml .column {
-    /* flex: 1 1 0px; */
+    min-width: 200px;
   }
 
   .entry-container .innerhtml img {
     max-width: 100%;
     height: auto;
     display: block;
+    
   }
 </style>
 

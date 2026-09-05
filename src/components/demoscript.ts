@@ -134,8 +134,8 @@ export class demoscript {
   static parse(text: String) : WikiParsed {
     text = text.replaceAll("\r", "");
 
-    let title: string = "";
-    let topic: string = "";
+    let title: string = "no title provided";
+    let topic: string = "no topic provided";
     let markers: Array<WikiMarker> = [];
     let rows_arr: Array<WikiRow> = [];
 
@@ -200,16 +200,10 @@ export class demoscript {
         // title, topic (to later be subtitle and links)
         if (index1 == 0 && index2 == 0) {
           let title_str = args.get("title");
-          if (title_str)
-            title = title_str;
-          else
-            console.warn("no title provided");
+          title_str ? title = title_str : console.warn("no topic provided");
 
           let topic_str = args.get("topic");
-          if (topic_str)
-            topic = topic_str;
-          else
-            console.warn("no topic provided");
+          topic_str ? topic = topic_str : console.warn("no topic provided");
         }
 
         console.log(args);
