@@ -1,6 +1,10 @@
 ---
-
+import KatexHead from "../components/katex-head.astro";
 ---
+
+<head>
+  <KatexHead />
+</head>
 
 <div class="TopBar">
 
@@ -99,6 +103,10 @@
 
   let raw_val = fetch_wiki_entry("");
   
-  process_entry(raw_val);
+  try {
+    process_entry(raw_val); 
+  } catch (error) {
+    console.log(error);
+  }
 
 </script>
