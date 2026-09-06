@@ -1,13 +1,30 @@
 import { marked } from 'marked';
 // adds ID fields to headers
-import { gfmHeadingId } from 'marked-gfm-heading-id';
+import { gfmHeadingId, getHeadingList, resetHeadings } from 'marked-gfm-heading-id';
 // latex rendering
 import markedKatex from 'marked-katex-extension';
 
 import DOMPurify from 'isomorphic-dompurify';
 
-marked.use(gfmHeadingId());
+marked.use(gfmHeadingId({ globalSlugs: true } as { prefix?: string; globalSlugs?: boolean }));
 marked.use(markedKatex({ throwOnError: false }));
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>'"]/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;'
+  })[character] ?? character);
+}
+
+function validWidth(value: string | undefined): string | null {
+  if (!value || !/^(?:0|\d+(?:\.\d+)?(?:px|%|vw|vh|rem|em|fr))$/.test(value)) {
+    return null;
+  }
+  return value;
+}
 
 
 class WikiMarker {
@@ -25,9 +42,9 @@ class WikiMarker {
     let per_indent: string = "10px";
 
     return `
-    <a href="#${this.anchor}">
+    <a href="#${escapeHtml(this.anchor)}">
       <div class="marker">
-        <p style="margin-left: calc(${this.indent} * ${per_indent});">${this.label}</p>
+        <p style="margin-left: calc(${this.indent} * ${per_indent});">${escapeHtml(this.label)}</p>
       </div>
     </a>
       `
@@ -102,8 +119,8 @@ export class WikiParsed {
 
   public get_nav_html() {
     return DOMPurify.sanitize(`
-    <h2>${this.title}</h2>
-    <h3>${this.topic}</h3>
+    <h2>${escapeHtml(this.title)}</h2>
+    <h3>${escapeHtml(this.topic)}</h3>
     `);
   }
 
@@ -126,18 +143,10 @@ export class WikiParsed {
   }
 }
 
-function stringToAnchor(str: string) : string {
-  return str
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')  // remove non word characters
-    .replace(/[\s_-]+/g, '-')  // replace spaces/underscores with a dashes
-    .replace(/^-+|-+$/g, '');  // trim leading/trailing dashes
-}
-
 export class demoscript {
-  static parse(text: String) : WikiParsed {
+  static parse(text: string) : WikiParsed {
     text = text.replaceAll("\r", "");
+    resetHeadings();
 
     let title: string = "no title provided";
     let topic: string = "no topic provided";
@@ -158,7 +167,7 @@ export class demoscript {
     // ugh
     // matches the beginning or :::, and matches the end or :::
     // include the leading \n since it is needed for the arguments
-    let row_regex = /(?:(?<=^|\n)(?<!\\):::|^)(\n?[\s\S]+?)(?=\n?(?<!\\):::|$)/g;
+    let row_regex = /(?:(?<=^|\n)(?<!\\):::|^)(\n?[\s\S]+?)(?=\n(?<!\\):::[^\n]*(?:\n|$)|$)/g;
 
     content_text.matchAll(row_regex).forEach((value, index1) => {
       // take only the inner capture
@@ -177,6 +186,7 @@ export class demoscript {
 
         // match everything like blah=blah
         // must begin with a word
+        // let args_regex = /\w+\s*=\s*("[^"]*"|'[^']*'|.+?)(?=\s+\w+\s*=|$)/g;
         let args_regex = /\w.+?\=\s*("[^"]*"|'[^']*'|[^,\n]+)/g;
         let args_strs = line1.matchAll(args_regex).toArray().map((value) => value[0].trim().toString());
         let args: Map<string, string> = new Map();
@@ -192,10 +202,7 @@ export class demoscript {
         // checking against the width entry in args
         // sorry this is a useless comment
         let width: string | null = (() : string | null => {
-          let width_str = args.get("width");
-          if (width_str)
-            return width_str
-          return null
+          return validWidth(args.get("width"));
         })();
 
 
@@ -213,7 +220,7 @@ export class demoscript {
 
 
         let col = new WikiCol(
-          marked.parse(value.substring(line1.length)).toString(),
+          DOMPurify.sanitize(marked.parse(value.substring(line1.length)).toString()),
           width
         );
         row.add_child( col );
@@ -224,14 +231,8 @@ export class demoscript {
 
 
 
-    // scanning for markers
-    let markers_regex = /^\#+.+/gm;
-    content_text.matchAll(markers_regex).forEach((value) => {
-      let label = value[0].replace(/^\#+\s*/, "");
-      let indent_level = value[0].match(/^\#+/)![0].length;
-      let anchorified = stringToAnchor(value[0]);
-
-      markers.push( new WikiMarker(label, anchorified, indent_level) );
+    getHeadingList().forEach((heading) => {
+      markers.push(new WikiMarker(heading.raw, heading.id, heading.level));
     });
 
     let out: WikiParsed = new WikiParsed(title, topic, markers, rows_arr);
