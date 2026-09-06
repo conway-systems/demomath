@@ -1,8 +1,11 @@
-"use strict";
-
 import { marked } from 'marked';
+// adds ID fields to headers
 import { gfmHeadingId } from 'marked-gfm-heading-id';
+// latex rendering
+import markedKatex from 'marked-katex-extension';
+
 marked.use(gfmHeadingId());
+marked.use(markedKatex({ throwOnError: false }));
 
 
 class WikiMarker {
@@ -180,7 +183,6 @@ export class demoscript {
           let key = value.split("=")[0];
           // trims past the equals, replaces beginning quote and end quote
           let v = value.substring(key.length+1).trim().replace(/^["']|["']$/g, "");;
-          console.log(v);
           
           args.set(key.trim(), v);
         });
@@ -206,8 +208,6 @@ export class demoscript {
           topic_str ? topic = topic_str : console.warn("no topic provided");
         }
 
-        console.log(args);
-
 
 
         let col = new WikiCol(
@@ -232,8 +232,6 @@ export class demoscript {
       markers.push( new WikiMarker(label, anchorified, indent_level) );
     });
 
-
-    //console.log(markers);
     let out: WikiParsed = new WikiParsed(title, topic, markers, rows_arr);
 
 
@@ -285,8 +283,12 @@ it **should** follow the markdown spec, other than the obvious sectioning
 :::
 
 # heading 3
+::: width=700px
 this is not separated into columns!
 
+$$\\Gamma(s)=\\int_0^\\infty x^{s-1}e^{-x} \\text dx$$
+
 hopefully, the columns should automatically arrange themselves by size
-and by device size, but it isn't really a guaranteed yet `;
+and by device size, but it isn't really a guaranteed yet 
+:::`;
 }

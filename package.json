@@ -18,6 +18,8 @@
     "astro-pagefind": "^2.0.1",
     "marked": "^18.0.11",
     "marked-gfm-heading-id": "^4.1.4",
+    "marked-katex": "^0.3.8",
+    "marked-katex-extension": "^5.1.12",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0"
   },
