@@ -4,6 +4,8 @@ import { gfmHeadingId } from 'marked-gfm-heading-id';
 // latex rendering
 import markedKatex from 'marked-katex-extension';
 
+import DOMPurify from 'isomorphic-dompurify';
+
 marked.use(gfmHeadingId());
 marked.use(markedKatex({ throwOnError: false }));
 
@@ -99,10 +101,10 @@ export class WikiParsed {
   }
 
   public get_nav_html() {
-    return `
+    return DOMPurify.sanitize(`
     <h2>${this.title}</h2>
     <h3>${this.topic}</h3>
-    `;
+    `);
   }
 
   public get_markers_html() {
@@ -110,7 +112,7 @@ export class WikiParsed {
     this.markers.forEach((marker) => {
       html += marker.get_html();
     })
-    return html;
+    return DOMPurify.sanitize(html);
   }
 
   public get_inner_html() {
@@ -120,7 +122,7 @@ export class WikiParsed {
       out += value.get_html();
     })
 
-    return out;
+    return DOMPurify.sanitize(out);
   }
 }
 
@@ -281,9 +283,10 @@ images! (this column is _700px wide_)
 it **should** follow the markdown spec, other than the obvious sectioning
 ![Example image](https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Cape_Otway_%28AU%29%2C_Cape_Otway_Lighthouse%2C_Telegraph_Station_--_2019_--_1179.jpg/1280px-Cape_Otway_%28AU%29%2C_Cape_Otway_Lighthouse%2C_Telegraph_Station_--_2019_--_1179.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail "A house")
 :::
+---
 
 # heading 3
-::: width=700px
+::: width=50vw
 this is not separated into columns!
 
 $$\\Gamma(s)=\\int_0^\\infty x^{s-1}e^{-x} \\text dx$$

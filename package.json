@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.0.9",
     "astro-pagefind": "^2.0.1",
+    "isomorphic-dompurify": "^4.1.0",
     "marked": "^18.0.11",
     "marked-gfm-heading-id": "^4.1.4",
     "marked-katex": "^0.3.8",
